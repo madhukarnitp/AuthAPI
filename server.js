@@ -7,8 +7,6 @@ const path = require('path');
 const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
-const PORT = process.env.PORT;
-
 //Database Connection
 DBConnect();
 
@@ -18,8 +16,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
 //app Routes
+
+app.get('/api/health',(req,res)=> res.json({HealthStatus: 'Ok', message: 'Server is Up and Running!'}));
 app.use('/api/auth', authRoutes);
 
-app.listen(PORT , ()=>{
-    console.log(`Server is Up and running at PORT: ${PORT}`);
-});
+// app.listen(process.env.PORT , ()=>{
+//     console.log(`Server is Up and running at PORT: ${process.env.PORT}`);
+// });
+export default app;
