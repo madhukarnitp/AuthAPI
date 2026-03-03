@@ -39,7 +39,7 @@ router.post(
       });
       const saveUser = await user.save();
 
-      const verifyURL = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
+      const verifyURL = `${process.env.API_URL}/verify-email/${verifyToken}`;
       await sendEmail(email, "Verify Your MyAPP Account", verifyURL);
       res.status(201).json({
         success: true,
@@ -184,7 +184,7 @@ router.post("/resend-verification", async (req, res) => {
     user.emailVerificationExpires = Date.now() + 2 * 60 * 60000;
     await user.save();
 
-    const verifyURL = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
+    const verifyURL = `${process.env.API_URL}/verify-email/${verifyToken}`;
     await sendEmail(email, 'Verify Your MyAPP Account', verifyURL);
     res.status(201).json({
       success: true,
