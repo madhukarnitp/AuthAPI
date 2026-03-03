@@ -40,7 +40,7 @@ router.post(
       const saveUser = await user.save();
 
       const verifyURL = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
-      sendEmail(email, "Verify Your MyAPP Account", verifyURL);
+      await sendEmail(email, "Verify Your MyAPP Account", verifyURL);
       res.status(201).json({
         success: true,
         message: "SingnUp Successfully. Please Verify Email.",
