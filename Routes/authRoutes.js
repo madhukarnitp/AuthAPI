@@ -161,7 +161,7 @@ router.get("/verify-email/:token", async (req, res) => {
 
     await user.save();
     
-    res.redirect("http://localhost:3000/email-verified.html");
+    res.redirect(`${process.env.CLIENT_URL}/email-verified.html`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
