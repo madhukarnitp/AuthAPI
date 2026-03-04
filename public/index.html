@@ -283,8 +283,8 @@
     <script>
         
         function parseData() {
-            document.getElementById('userName').innerText = window.currentUser.fullname;
-            document.getElementById('userHName').innerText = window.currentUser.fullname.trim().split(' ')[0];
+            document.getElementById('userName').innerText = window.currentUser?.fullname;
+            document.getElementById('userHName').innerText = window.currentUser?.fullname.trim().split(' ')[0];
         }
         parseData();
 
