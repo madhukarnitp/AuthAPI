@@ -53,7 +53,6 @@
         }
         (async () => {
             const ok = await checkAuth();
-            const user=window.currentUser;
             if (!ok) {
                 window.location.replace('/login.html');
                 return;
@@ -284,8 +283,8 @@
     <script>
         
         function parseData() {
-            document.getElementById('userName').innerText = user.fullname;
-            document.getElementById('userHName').innerText = user.fullname.trim().split(' ')[0];
+            document.getElementById('userName').innerText = window.currentUser.fullname;
+            document.getElementById('userHName').innerText = window.currentUser.fullname.trim().split(' ')[0];
         }
         parseData();
 
