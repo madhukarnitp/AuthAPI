@@ -283,8 +283,19 @@
     <script>
         
         function parseData() {
-            document.getElementById('userName').innerText = window.currentUser?.fullname;
-            document.getElementById('userHName').innerText = window.currentUser?.fullname.trim().split(' ')[0];
+            const user = window.currentUser;
+        
+            if (!user) {
+                console.warn("User not loaded yet");
+                return;
+            }
+        
+            const fullName = user.fullname || user.name || '';
+        
+            document.getElementById('userName').innerText = fullName;
+        
+            document.getElementById('userHName').innerText =
+                fullName.split(' ')[0] || '';
         }
         parseData();
 
