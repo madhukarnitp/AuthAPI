@@ -198,7 +198,6 @@ router.post("/resend-verification", async (req, res) => {
 router.get("/access-token", async (req, res) => {
   try {
     const token = req.cookies.accessToken;
-
     if (!token) {
       return res
         .status(401)
@@ -206,8 +205,18 @@ router.get("/access-token", async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    res.status(200).json({ success: true, message: "Verified User!" });
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Verified User!",
+      user: user,
+    });
   } catch (err) {
     return res.status(401).json({ success: false });
   }
