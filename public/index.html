@@ -17,10 +17,10 @@
         }
     </style>
     <script>
+        const API_URL = './api/auth';
         async function checkAuth() {
             try {
-
-                let res = await fetch(`./api/auth/access-token`, {
+                let res = await fetch(`${API_URL}/access-token`, {
                     credentials: "include",
                 });
 
@@ -42,7 +42,7 @@
 
                     if (retry.ok) {
                         const data = await retry.json();
-                        window.currentUser = data.user;
+                        const user = data.user;
                         return true;
                     }
                 }
@@ -55,7 +55,6 @@
         }
         (async () => {
             const ok = await checkAuth();
-        
             if (!ok) {
                 window.location.replace('/login.html');
                 return;
@@ -284,7 +283,7 @@
         </div>
     </div>
     <script>
-        const user = window.currentUser;
+        
         function parseData() {
             document.getElementById('userName').innerText = user.fullname;
             document.getElementById('userHName').innerText = user.fullname.trim().split(' ')[0];
