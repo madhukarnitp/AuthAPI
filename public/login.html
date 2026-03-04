@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,31 +8,41 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
         const API_URL = './api/auth';
-        // Check if already logged in
-        const token = localStorage.getItem('userData');
-        if (token) window.location.href = "/";
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const res = await fetch("/api/auth/isLoggedIn", {
+                    credentials: "include"
+                });
+                if (res.ok) {
+                    window.location.replace("/");
+                }
+            } catch (err) {
+                console.log("User not logged in");
+            }
+        });
     </script>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
     <!-- Login Container -->
     <div id="loginContainer" class="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Login</h2>
-        
+
         <form id="loginForm" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" id="username" name="username" required 
+                <input type="text" id="username" name="username" required
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="password" name="password" required 
+                <input type="password" id="password" name="password" required
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
 
-            <button type="submit" 
+            <button type="submit"
                 class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 Login
             </button>
@@ -40,7 +51,7 @@
         <div id="statusMsg" class="mt-4 py-1 text-red-800 bg-red-500/40 font-medium text-md text-center hidden"></div>
 
         <p class="mt-4 text-center text-sm text-gray-600">
-            Don't have an account? 
+            Don't have an account?
             <a href="register.html" class="font-medium text-green-600 hover:text-green-500">Register here</a>
         </p>
     </div>
@@ -48,13 +59,13 @@
         // Login Logic
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('statusMsg');
 
             statusDiv.classList.add('hidden');
-            statusDiv.innerText='';
+            statusDiv.innerText = '';
 
             try {
                 const res = await fetch(`${API_URL}/login`, {
@@ -68,19 +79,19 @@
 
                 const data = await res.json();
 
-                if (res.ok) {
-                    localStorage.setItem('userData',JSON.stringify(data.user));
-                    window.location.href='/';
-                } else {
-                    statusDiv.innerText = data.message || 'Invalid Credentials';
-                    statusDiv.classList.remove('hidden');
-                }
-
-            } catch (error) {
-                statusDiv.innerText = 'Internal Server Error!';
+                if (res.ok)
+                    window.location.replace('/');
+            } else {
+                statusDiv.innerText = data.message || 'Invalid Credentials';
                 statusDiv.classList.remove('hidden');
             }
+
+        } catch (error) {
+            statusDiv.innerText = 'Internal Server Error!';
+            statusDiv.classList.remove('hidden');
+        }
         });
     </script>
 </body>
+
 </html>
