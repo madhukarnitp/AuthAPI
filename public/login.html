@@ -8,18 +8,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
         const API_URL = './api/auth';
-        document.addEventListener("DOMContentLoaded", async () => {
+        (async () => {
             try {
-                const res = await fetch("/api/auth/isLoggedIn", {
-                    credentials: "include"
+                const res = await fetch('/api/auth/access-token', {
+                    credentials: 'include'
                 });
+        
                 if (res.ok) {
-                    window.location.replace("/");
+                    window.location.replace('/');
                 }
-            } catch (err) {
-                console.log("User not logged in");
-            }
-        });
+            } catch {}
+        })();
     </script>
 </head>
 
