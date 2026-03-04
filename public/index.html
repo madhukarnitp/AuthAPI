@@ -10,6 +10,10 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            visibility: hidden;
+        }
+        body.auth-ready {
+          visibility: visible;
         }
     </style>
     <script>
@@ -50,12 +54,16 @@
                 window.location.replace('/login.html');
             }
         }
-        document.addEventListener("DOMContentLoaded", async () => {
-            const isAuth = await checkAuth();
-            if (isAuth) {
-                useUser();
+        (async () => {
+            const ok = await checkAuth();
+        
+            if (!ok) {
+                window.location.replace('/login.html');
+                return;
             }
-        });
+            document.documentElement.classList.add('auth-ready');
+            document.body.classList.add('auth-ready');
+        })();
 
     </script>
 </head>
