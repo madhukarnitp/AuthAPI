@@ -17,17 +17,16 @@
         }
     </style>
     <script>
-        const API_URL = "./api/auth";
         async function checkAuth() {
             try {
 
-                let res = await fetch(`${API_URL}/access-token`, {
+                let res = await fetch(`./api/auth/access-token`, {
                     credentials: "include",
                 });
 
                 if (res.ok) {
                     const data = await res.json();
-                    window.currentUser = data.user; // ✅ user available
+                    window.currentUser = data.user;
                     return true;
                 }
 
