@@ -42,19 +42,18 @@
 
                     if (retry.ok) {
                         const data = await retry.json();
-                        const user = data.user;
+                        window.currentUser = data.user;
                         return true;
                     }
                 }
-
                 window.location.replace('/login.html');
-
             } catch (err) {
                 window.location.replace('/login.html');
             }
         }
         (async () => {
             const ok = await checkAuth();
+            const user=window.currentUser;
             if (!ok) {
                 window.location.replace('/login.html');
                 return;
