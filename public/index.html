@@ -13,15 +13,54 @@
         }
     </style>
     <script>
-        const userData = localStorage.getItem('userData');
-        if (!userData){
-            window.location.href = "login.html";
+        const API_URL = "./api/auth";
+        async function checkAuth() {
+            try {
+
+                let res = await fetch(`${API_URL}/access-token`, {
+                    credentials: "include",
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    window.currentUser = data.user; // ✅ user available
+                    return true;
+                }
+
+                res = await fetch(`${API_URL}/refresh-token`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+
+                if (res.ok) {
+                    const retry = await fetch(`${API_URL}/access-token`, {
+                        credentials: "include",
+                    });
+
+                    if (retry.ok) {
+                        const data = await retry.json();
+                        window.currentUser = data.user;
+                        return true;
+                    }
+                }
+
+                window.location.replace('/login.html');
+
+            } catch (err) {
+                window.location.replace('/login.html');
+            }
         }
-        const user = JSON.parse(userData);
+        document.addEventListener("DOMContentLoaded", async () => {
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                useUser();
+            }
+        });
+
     </script>
 </head>
 
-<body onload="checkAuth()">
+<body>
     <div class="flex h-screen">
 
         <!-- Sidebar -->
@@ -84,9 +123,7 @@
             <!-- User Profile -->
             <div class="p-4 border-t border-slate-800">
                 <div class="flex items-center gap-3">
-                    <img class="h-10 w-10 rounded-full object-cover"
-                        src="./assets/profilePic.jpg"
-                        alt="User">
+                    <img class="h-10 w-10 rounded-full object-cover" src="./assets/profilePic.jpg" alt="User">
                     <div>
                         <p class="text-sm font-medium text-white" id="userName"></p>
                         <p class="text-xs text-gray-400">Admin</p>
@@ -127,7 +164,8 @@
                         </svg>
                         <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                     </button>
-                    <div class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer hover:scale-105" onclick="handleLogOut()">Logout</div>
+                    <div class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer hover:scale-105"
+                        onclick="handleLogOut()">Logout</div>
                 </div>
             </header>
 
@@ -239,34 +277,10 @@
         </div>
     </div>
     <script>
-        const API_URL = "./api/auth";
-        async function checkAuth() {
-            try {
-                //check access-token
-                let res = await fetch(`${API_URL}/access-token`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-                if (res.ok) return true;
-
-                //refresh access-token
-                res = await fetch(`${API_URL}/refresh-token`, {
-                    method: "POST",
-                    credentials: "include",
-                });
-                if (res.ok) return true;
-
-                window.location.href = "/login.html";
-                return false;
-            } catch (err) {
-                window.location.href = "/login.html";
-                return false;
-            }
-        }
-
-        function parseData(){
-            document.getElementById('userName').innerText=user.fullname;
-            document.getElementById('userHName').innerText=user.fullname.trim().split(' ')[0];
+        const user = window.currentUser;
+        function parseData() {
+            document.getElementById('userName').innerText = user.fullname;
+            document.getElementById('userHName').innerText = user.fullname.trim().split(' ')[0];
         }
         parseData();
 
