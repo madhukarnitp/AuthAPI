@@ -53,6 +53,7 @@
         }
         (async () => {
             const ok = await checkAuth();
+            parseData();
             if (!ok) {
                 window.location.replace('/login.html');
                 return;
@@ -283,13 +284,7 @@
     <script>
         
         function parseData() {
-            const user = window.currentUser;
-        
-            if (!user) {
-                console.warn("User not loaded yet");
-                return;
-            }
-        
+            const user = window.currentUser;        
             const fullName = user.fullname || user.name || '';
         
             document.getElementById('userName').innerText = fullName;
@@ -297,8 +292,7 @@
             document.getElementById('userHName').innerText =
                 fullName.split(' ')[0] || '';
         }
-        parseData();
-
+        
         async function handleLogOut() {
             const res = await fetch(`${API_URL}/logout`, {
                 method: "POST",
