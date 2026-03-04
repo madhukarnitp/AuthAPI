@@ -7,9 +7,10 @@
     <title>Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
+        const API_URL = './api/auth';
         (async () => {
             try {
-                const res = await fetch('./api/auth/access-token', {
+                const res = await fetch(`${API_URL}/access-token`, {
                     credentials: 'include'
                 });
         
@@ -54,19 +55,19 @@
         </p>
     </div>
     <script>
-        // Login Logic
+               
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+        
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('statusMsg');
-
+        
             statusDiv.classList.add('hidden');
             statusDiv.innerText = '';
-
+        
             try {
-                const res = await fetch('./api/auth/login', {
+                const res = await fetch(`${API_URL}/login`, {
                     method: 'POST',
                     credentials: "include",
                     headers: {
@@ -74,20 +75,20 @@
                     },
                     body: JSON.stringify({ email, password })
                 });
-
+        
                 const data = await res.json();
-
-                if (res.ok)
+        
+                if (res.ok) {
                     window.location.replace('/');
                 } else {
                     statusDiv.innerText = data.message || 'Invalid Credentials';
                     statusDiv.classList.remove('hidden');
                 }
-
-        } catch (error) {
-            statusDiv.innerText = 'Internal Server Error!';
-            statusDiv.classList.remove('hidden');
-        }
+        
+            } catch (error) {
+                statusDiv.innerText = 'Internal Server Error!';
+                statusDiv.classList.remove('hidden');
+            }
         });
     </script>
 </body>
