@@ -4,273 +4,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Logged In</title>
+    <title>Dashboard</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-    <script>
-        const userData = localStorage.getItem('userData');
-        if (!userData){
-            window.location.href = "login.html";
-        }
-        const user = JSON.parse(userData);
-    </script>
+
 </head>
 
-<body onload="checkAuth()">
-    <div class="flex h-screen">
+<body class="bg-gray-100 min-h-screen">
 
-        <!-- Sidebar -->
-        <aside class="w-64 bg-slate-900 text-white hidden md:flex flex-col">
-            <!-- Logo -->
+    <!-- Navbar -->
 
-            <div class="h-16 flex items-center justify-center border-b border-slate-800">
-                <h1 class="text-2xl font-bold text-blue-500">MyApp</h1>
-            </div>
+    <nav class="bg-green-600 text-white px-8 py-4 flex justify-between items-center shadow">
 
-            <!-- Navigation -->
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" class="flex items-center px-4 py-3 bg-blue-600 rounded-lg text-white">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                        </path>
-                    </svg>
-                    Dashboard
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                        </path>
-                    </svg>
-                    Team
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-                    </svg>
-                    Projects
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                        </path>
-                    </svg>
-                    Reports
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-gray-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    Settings
-                </a>
-            </nav>
+        <h1 class="text-lg font-semibold">
+            SecureAuth Dashboard
+        </h1>
 
-            <!-- User Profile -->
-            <div class="p-4 border-t border-slate-800">
-                <div class="flex items-center gap-3">
-                    <img class="h-10 w-10 rounded-full object-cover"
-                        src="./assets/profilePic.jpg"
-                        alt="User">
-                    <div>
-                        <p class="text-sm font-medium text-white" id="userName"></p>
-                        <p class="text-xs text-gray-400">Admin</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <div class="flex items-center gap-4">
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
+            <span id="navUser" class="font-medium"></span>
 
-            <!-- Header -->
-            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
-                <div class="flex items-center gap-4">
-                    <button class="md:hidden text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </span>
-                        <input type="text" placeholder="Search..."
-                            class="pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 w-64">
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button class="relative text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                            </path>
-                        </svg>
-                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                    </button>
-                    <div class="text-sm text-gray-600 hover:text-gray-900 cursor-pointer hover:scale-105" onclick="handleLogOut()">Logout</div>
-                </div>
-            </header>
+            <button onclick="logout()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
+                Logout
+            </button>
 
-            <!-- Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-
-                <!-- Welcome -->
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-gray-800">Welcome back, <span id="userHName"></span>! 👋</h2>
-                    <p class="text-gray-600">Here's what's happening with your projects today.</p>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <!-- Card 1 -->
-                    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Total Revenue</p>
-                            <p class="text-2xl font-bold text-gray-800">$54,230</p>
-                        </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center">
-                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Active Projects</p>
-                            <p class="text-2xl font-bold text-gray-800">12</p>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center">
-                        <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">New Users</p>
-                            <p class="text-2xl font-bold text-gray-800">450</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Projects Table -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">Recent Projects</h3>
-                    </div>
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 text-gray-600 text-sm uppercase">
-                            <tr>
-                                <th class="px-6 py-3 font-medium">Project Name</th>
-                                <th class="px-6 py-3 font-medium">Status</th>
-                                <th class="px-6 py-3 font-medium">Date</th>
-                                <th class="px-6 py-3 font-medium">Price</th>
-                                <th class="px-6 py-3 font-medium text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-medium">Website Redesign</td>
-                                <td class="px-6 py-4"><span
-                                        class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Active</span>
-                                </td>
-                                <td class="px-6 py-4">Oct 24, 2023</td>
-                                <td class="px-6 py-4">$1,200</td>
-                                <td class="px-6 py-4 text-right"><a href="#"
-                                        class="text-blue-600 hover:text-blue-900">View</a></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-medium">Mobile App</td>
-                                <td class="px-6 py-4"><span
-                                        class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Pending</span>
-                                </td>
-                                <td class="px-6 py-4">Oct 22, 2023</td>
-                                <td class="px-6 py-4">$3,500</td>
-                                <td class="px-6 py-4 text-right"><a href="#"
-                                        class="text-blue-600 hover:text-blue-900">View</a></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 font-medium">UI/UX Design</td>
-                                <td class="px-6 py-4"><span
-                                        class="px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">Completed</span>
-                                </td>
-                                <td class="px-6 py-4">Oct 20, 2023</td>
-                                <td class="px-6 py-4">$850</td>
-                                <td class="px-6 py-4 text-right"><a href="#"
-                                        class="text-blue-600 hover:text-blue-900">View</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
         </div>
+
+    </nav>
+
+
+    <!-- Dashboard -->
+
+    <div class="max-w-4xl mx-auto mt-12">
+
+        <div class="bg-white p-8 rounded-lg shadow">
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                Welcome <span id="navUser"></span>
+            </h2>
+
+            <div class="space-y-4 text-gray-700">
+                <p><b>FullName:</b> <span id="fullname"></span></p>
+                <p><b>Email:</b> <span id="userEmail"></span></p>
+                <p><b>Phone:</b> <span id="userPhone"></span></p>
+                <p><b>Account Created:</b> <span id="createdDate"></span></p>
+
+            </div>
+
+        </div>
+
     </div>
+
+
     <script>
-        const API_URL = "http://localhost:3000/api/auth";
-        async function checkAuth() {
+
+        const API_URL = "/api/auth";
+
+
+        async function getAuthenticatedUser() {
+
             try {
-                //check access-token
+
                 let res = await fetch(`${API_URL}/access-token`, {
                     method: "GET",
-                    credentials: "include",
+                    credentials: "include"
                 });
-                if (res.ok) return true;
 
-                //refresh access-token
-                res = await fetch(`${API_URL}/refresh-token`, {
-                    method: "POST",
-                    credentials: "include",
-                });
-                if (res.ok) return true;
 
-                window.location.href = "/login.html";
-                return false;
+                if (res.ok) {
+
+                    const data = await res.json();
+                    return data.user;
+
+                }
+
+
+                if (res.status === 401) {
+
+                    const refresh = await fetch(`${API_URL}/refresh-token`, {
+                        method: "POST",
+                        credentials: "include"
+                    });
+
+
+                    if (refresh.ok) {
+
+                        const retry = await fetch(`${API_URL}/access-token`, {
+                            method: "GET",
+                            credentials: "include"
+                        });
+
+
+                        if (retry.ok) {
+
+                            const data = await retry.json();
+                            return data.user;
+
+                        }
+
+                    }
+
+                }
+                window.location.href = "login.html";
             } catch (err) {
-                window.location.href = "/login.html";
-                return false;
+                console.log(err);
+                window.location.href = "login.html";
             }
         }
-
-        function parseData(){
-            document.getElementById('userName').innerText=user.fullname;
-            document.getElementById('userHName').innerText=user.fullname.trim().split(' ')[0];
+        async function loadDashboard() {
+            const user = await getAuthenticatedUser();
+            if (!user) return;
+            document.getElementById("fullname").innerText = user.fullname;
+            document.getElementById("navUser").innerText = user.fullname.split(" ")[0];
+            document.getElementById("userEmail").innerText = user.email;
+            document.getElementById("userPhone").innerText = user.phone || "Not provided";
+            document.getElementById("createdDate").innerText =new Date(user.createdAt).toLocaleDateString();
         }
-        parseData();
-
-        async function handleLogOut() {
+        async function logout() {
             const res = await fetch(`${API_URL}/logout`, {
                 method: "POST",
             });
@@ -279,8 +129,9 @@
                 window.location.href = 'login.html';
             }
         }
-
+        loadDashboard();
     </script>
+
 </body>
 
 </html>

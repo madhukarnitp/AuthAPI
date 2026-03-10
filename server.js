@@ -1,13 +1,12 @@
 const express = require('express');
 const app =express();
-const validator = require('express-validator');
 const DBConnect =require('./config/dbconnector');
 const authRoutes = require('./Routes/authRoutes');
 const path = require('path');
 const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 //Database Connection
 DBConnect();

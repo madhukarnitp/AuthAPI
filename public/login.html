@@ -6,81 +6,109 @@
     <title>Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
-        const API_URL = './api/auth';
-        // Check if already logged in
-        const token = localStorage.getItem('userData');
+        const API_URL = "./api/auth";
+        const token = localStorage.getItem("userData");
         if (token) window.location.href = "/";
+        let loginEmail = "";
     </script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-
-    <!-- Login Container -->
     <div id="loginContainer" class="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Login</h2>
-        
+        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">
+            Login
+        </h2>
         <form id="loginForm" class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" id="username" name="username" required 
+                <label class="block text-sm font-medium text-gray-700">
+                    Email
+                </label>
+                <input type="text" id="username" required
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
-
             <div>
-                <label class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="password" name="password" required 
+                <label class="block text-sm font-medium text-gray-700">
+                    Password
+                </label>
+                <input type="password" id="password" required
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
-
-            <button type="submit" 
-                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            <button type="submit" class="w-full py-2 px-4 text-white bg-green-600 hover:bg-green-700 rounded-md">
                 Login
             </button>
         </form>
-
-        <div id="statusMsg" class="mt-4 py-1 text-red-800 bg-red-500/40 font-medium text-md text-center hidden"></div>
-
+        <!-- Status Message -->
+        <div id="statusMsg"
+            class="mt-4 py-2 px-3 text-red-800 bg-red-500/40 font-medium text-sm text-center rounded hidden">
+        </div>
         <p class="mt-4 text-center text-sm text-gray-600">
-            Don't have an account? 
-            <a href="register.html" class="font-medium text-green-600 hover:text-green-500">Register here</a>
+            Forgot Password?
+            <a href="resetPassword.html" class="font-medium text-green-600 hover:text-green-500">
+                Reset Password
+            </a>
+        </p>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Don't have an account?
+            <a href="register.html" class="font-medium text-green-600 hover:text-green-500">
+                Register here
+            </a>
         </p>
     </div>
     <script>
-        // Login Logic
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            
-            const email = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const statusDiv = document.getElementById('statusMsg');
+            const email = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
 
-            statusDiv.classList.add('hidden');
-            statusDiv.innerText='';
+            loginEmail = email;
+
+            const statusDiv = document.getElementById("statusMsg");
+            statusDiv.classList.add("hidden");
+            statusDiv.innerHTML = "";
 
             try {
                 const res = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
+                    method: "POST",
                     credentials: "include",
                     headers: {
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({ email, password })
                 });
-
                 const data = await res.json();
-
                 if (res.ok) {
-                    localStorage.setItem('userData',JSON.stringify(data.user));
-                    window.location.href='/';
-                } else {
-                    statusDiv.innerText = data.message || 'Invalid Credentials';
-                    statusDiv.classList.remove('hidden');
+                    localStorage.setItem("userData", JSON.stringify(data.user));
+                    window.location.href = "/";
                 }
-
+                else if (res.status === 403) {
+                    statusDiv.innerHTML = `${data.message}<br><a id="resendBtn" class="text-blue-700 hover:underline cursor-pointer text-sm">Resend verification email</a>`;
+                    statusDiv.classList.remove("hidden");
+                    document.getElementById("resendBtn").addEventListener("click", resendVerification);
+                } else {
+                    statusDiv.innerText = data.message || "Invalid credentials";
+                    statusDiv.classList.remove("hidden");
+                }
             } catch (error) {
-                statusDiv.innerText = 'Internal Server Error!';
-                statusDiv.classList.remove('hidden');
+                statusDiv.innerText = "Internal Server Error!";
+                statusDiv.classList.remove("hidden");
             }
         });
+
+        async function resendVerification() {
+            const statusDiv = document.getElementById("statusMsg");
+            try {
+                const res = await fetch(`${API_URL}/resend-verification`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email: loginEmail })
+                });
+                const data = await res.json();
+                statusDiv.innerText = data.message || "Verification email sent";
+            } catch {
+                statusDiv.innerText = "Failed to send verification email";
+            }
+        }
     </script>
 </body>
 </html>

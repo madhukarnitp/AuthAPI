@@ -8,11 +8,12 @@ const {
   signupValidator,
   loginValidator,
 } = require("../validators/authValidator");
-const { generateAccessToken, refreshAccessToken } = require("../utils/token");
+const { generateAccessToken, refreshAccessToken } = require("../utils/tokenGenerator");
 const strictBody = require("../middleware/strictBody");
 const sendEmail = require("../utils/sendEmail");
-const validate = require("../middleware/Validate");
-
+const validate = require("../middleware/validate");
+const { body } = require("express-validator");
+const protect = require('../middleware/protect')
 router.post(
   "/signup",
   strictBody(["fullname", "email", "password", "phone"]),
@@ -40,7 +41,7 @@ router.post(
       const saveUser = await user.save();
 
       const verifyURL = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
-      sendEmail(email, "Verify Your MyAPP Account", verifyURL);
+      await sendEmail(email, "Verify Your MyAPP Account", verifyURL, "verificationLink",user.fullname);
       res.status(201).json({
         success: true,
         message: "SingnUp Successfully. Please Verify Email.",
@@ -69,7 +70,7 @@ router.post(
       if (!user.isVerified)
         return res.status(403).json({
           success: false,
-          message: "Please Verify Your Email first!",
+          message: "Account Not Verified! <br> please Verify Account first!",
         });
 
       const isMatch = await bcrypt.compare(password, user.password);
@@ -100,7 +101,7 @@ router.post(
       });
       const userData = {
         _id: user._id,
-        username: user.email,
+        email: user.email,
         fullname: user.fullname,
         phone: user.phone,
       }
@@ -185,7 +186,7 @@ router.post("/resend-verification", async (req, res) => {
     await user.save();
 
     const verifyURL = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
-    await sendEmail(email, 'Verify Your MyAPP Account', verifyURL);
+    await sendEmail(email, "Verify Your MyAPP Account", verifyURL, "verificationLink",user.fullname);
     res.status(201).json({
       success: true,
       message: "Verification Email resent!",
@@ -195,7 +196,7 @@ router.post("/resend-verification", async (req, res) => {
   }
 });
 
-router.get("/access-token", async (req, res) => {
+router.get("/access-token", protect, async (req, res) => {
   try {
     const token = req.cookies.accessToken;
 
@@ -206,8 +207,18 @@ router.get("/access-token", async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    res.status(200).json({ success: true, message: "Verified User!" });
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Verified User!",
+      user: user,
+    });
   } catch (err) {
     return res.status(401).json({ success: false });
   }
@@ -249,5 +260,70 @@ router.post("/refresh-token", async (req, res) => {
     });
   }
 });
+
+router.post("/forgot-password-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(404).json({
+        success: false,
+        message: "User Not Found!",
+      });
+
+    const otp = crypto.randomInt(100000, 1000000);
+    user.resetOtp = otp;
+    user.resetOtpExpires = Date.now() + 10 * 60 * 1000;
+    await user.save();
+    await sendEmail(email, "Reset Your Password", otp, "OTP", user.fullname);
+    res.status(200).json({
+      success: true,
+      message: "Password reset OTP sent to email",
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+router.post(
+  "/reset-password-otp",
+  strictBody(["email", "otp", "password"]),
+  async (req, res) => {
+    try {
+      const { email, otp, password } = req.body;
+
+      const user = await User.findOne({
+        email,
+        resetOtp: otp,
+        resetOtpExpires: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid or expired OTP",
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      user.password = hashedPassword;
+      user.resetOtp = undefined;
+      user.resetOtpExpires = undefined;
+
+      await user.save();
+
+      res.json({
+        success: true,
+        message: "Password reset successfully",
+      });
+
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+);
 
 module.exports = router;

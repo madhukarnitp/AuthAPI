@@ -4,22 +4,23 @@ const userSchema = new mongoose.Schema(
     {
         fullname : {
             type: String,
-            require: true,
+            required: true,
         },
         email : {
             type: String,
-            require: true,
+            required: true,
+            lowercase: true,
             unique: true,
             trim: true
         },
         phone : {
             type: String,
-            require: true,
+            unique: true,
+            required: true,
         },
         password : {
             type: String,
-            require: true,
-            unique: true,
+            required: true,
         },
         isVerified : {
             type: Boolean,
@@ -28,9 +29,10 @@ const userSchema = new mongoose.Schema(
         refreshToken: {
             type: String,
         },
-
         emailVerificationToken: String,
         emailVerificationExpires: Date,
+        resetOtp: String,
+        resetOtpExpires: Date
     },
     {
         timestamps: true,
